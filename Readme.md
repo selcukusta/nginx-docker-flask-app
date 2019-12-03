@@ -8,7 +8,7 @@
 
 ### Running
 
-```
+```bash
 # Provisioning
 vagrant up
 
