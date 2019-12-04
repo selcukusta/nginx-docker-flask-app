@@ -10,6 +10,8 @@ BOX_RAM_MB = "2048"
 MASTER_IP = "172.81.81.200"
 MASTER_HOSTNAME = "node-01"
 
+USE_SAMPLE_APP_V2 = "true"
+
 Vagrant.configure("2") do |config|
 
   config.vm.provider "virtualbox" do |vb|
@@ -25,14 +27,17 @@ Vagrant.configure("2") do |config|
     # warning: If you get "Hash sum mismatch" error while provisioning, please uncomment it!
     #node.vm.provision "shell", inline: "sudo rm -rf /var/lib/apt/lists/* && sudo apt-get update -o Acquire::CompressionTypes::Order::=gz"
     node.vm.provision "shell", inline: "echo 'cd /vagrant' >> ~/.bashrc && exit", privileged: false
-    node.vm.provision "shell" do |s|
-      s.path = "scripts/install-nginx.sh"
+    if USE_SAMPLE_APP_V2 == "false"
+      node.vm.provision "shell" do |s|
+        s.path = "scripts/install-nginx.sh"
+      end
     end
     node.vm.provision "shell" do |s|
       s.path = "scripts/install-docker.sh"
     end
     node.vm.provision "shell" do |s|
       s.path = "scripts/docker-build-run.sh"
+      s.args = [USE_SAMPLE_APP_V2]
     end
   end
 end
